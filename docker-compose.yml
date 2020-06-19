@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+    jump:
+        build:
+            context: .
+        image: jump:3
+        container_name: jump
+        hostname: jump
+        shm_size: 1g
+        ports:
+          - "5901:5901"
+          - "3389:3389"
+          - "8080:8080"
