@@ -12,7 +12,7 @@ services:
               VNCTLS: false
               BROWSER: "chromium"
               OPTPKGS: "nmap-ncat telnet tcpdump openssh-clients bind-utils net-snmp-utils"
-        image: jump:3
+        image: docker.io/okroshka/jump:latest
         container_name: 'jump'
         hostname: 'jump'
         shm_size: '1gb'

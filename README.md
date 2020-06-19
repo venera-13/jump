@@ -59,10 +59,10 @@ docker build -f ./Dockerfile -t localhost/jump:3
 
 ## Using the container
 
-Start the container with the below command. Parameters are explained in the table.
+Start the container with the below command. If you did not build the image yourself in the above steps the container will be downloaded from docker.io. Parameters are explained in the table.
 
 ```bash
-docker run -d --rm --shm-size=1g --name jump  -p 3389:3389 -p 5901:5901 -p 8080:8080 jump:3
+docker run -d --rm --shm-size=1g --name jump  -p 3389:3389 -p 5901:5901 -p 8080:8080 docker.io/okroshka/jump:latest
 docker stop jump
 ```
 
