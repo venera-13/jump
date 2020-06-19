@@ -27,7 +27,7 @@ Alle used software is open-source.
 
 ## Build instructions
 
-Clone the Git repository and add your own values to the "ARG" variables in the Docker file.
+Clone the Git repository and add your own values to the "ARG" variables in the Docker file or the docker-compose.yml depending on wether you want to use docker-compose or not.
 
 | ARG        | Description                              |
 |------------|------------------------------------------|
@@ -36,14 +36,25 @@ Clone the Git repository and add your own values to the "ARG" variables in the D
 | TZ         | Timezone the container lives in          |
 | KEYSUBJECT | Information about the SSL certificate    |
 | VNCTLS     | Enforce TLS encryption on VNC server     |
+| BROWSER    | Select your browser: firefox/chromium    |
+| OPTPKGS    | Select optional packages to install      |
 
-Building the container
+Building the container using docker-compose
+
+```bash
+git clone https://github.com/venera-13/jump.git
+cd jump
+vim docker-compose.yml
+docker-compose build
+```
+
+Building the container with docker
 
 ```bash
 git clone https://github.com/venera-13/jump.git
 cd jump
 vim Dockerfile
-docker-compose build
+docker build -f ./Dockerfile -t localhost/jump:3
 ```
 
 ## Using the container

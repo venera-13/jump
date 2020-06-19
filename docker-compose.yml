@@ -3,10 +3,19 @@ services:
     jump:
         build:
             context: .
+            dockerfile: Dockerfile
+            args:
+              USER: "jump"
+              PASS: "Venera13"
+              TZ: "Europe/Amsterdam"
+              KEYSUBJECT: "/C=NL/ST=Zuid-Holland/L=Rotterdam/O=MyCorp/OU=MyOU/CN=jump"
+              VNCTLS: false
+              BROWSER: "chromium"
+              OPTPKGS: "nmap-ncat telnet tcpdump openssh-clients bind-utils net-snmp-utils"
         image: jump:3
-        container_name: jump
-        hostname: jump
-        shm_size: 1g
+        container_name: 'jump'
+        hostname: 'jump'
+        shm_size: '1gb'
         ports:
           - "5901:5901"
           - "3389:3389"
