@@ -31,14 +31,16 @@ RUN dnf install --nodocs -y epel-release glibc-langpack-en && \
         xrdp \
 	xorgxrdp \
         supervisor \
-        openbox \
-        rxvt-unicode \
 	sudo \
 	# Fetch novnc and websockify from CentOS community build service
         https://cbs.centos.org/kojifiles/packages/novnc/1.1.0/6.el8/noarch/novnc-1.1.0-6.el8.noarch.rpm \
         https://cbs.centos.org/kojifiles/packages/python-websockify/0.9.0/1.el8/noarch/python3-websockify-0.9.0-1.el8.noarch.rpm \
 	${BROWSER} \
         ${OPTPKGS} && \
+    dnf -y -x gnome-keyring --skip-broken groups install "Xfce" && \
+    dnf erase -y *power* *screensaver* && \
+    rm /etc/xdg/autostart/xfce-polkit* && \
+    /bin/dbus-uuidgen > /etc/machine-id && \
     dnf clean all
 
 # Create user and set password.
@@ -70,18 +72,15 @@ RUN openssl req -x509 -nodes -newkey rsa:4096 -days 3650 \
     -keyout /etc/pki/tls/certs/novnc.pem -out /etc/pki/tls/certs/novnc.pem  \
     -subj "${KEYSUBJECT}"
 
-# Set openbox background to gray instead of solid black.
-RUN echo "xsetroot -gray" >> /etc/xdg/openbox/autostart
-
 # Run commands as non-root user to prevent having to set a lot of permissions and ownership.
 USER ${USER}
 
 # Configure password for TigerVNC and start openbox on TigerVNC startup.
 RUN mkdir ~/.vnc && echo "${PASS}" | /usr/bin/vncpasswd -f > ~/.vnc/passwd && chmod 600 ~/.vnc/passwd
-RUN echo "openbox-session" > ~/.vnc/xstartup && chmod +x ~/.vnc/xstartup
+RUN echo "xfce4-session" > ~/.vnc/xstartup && chmod +x ~/.vnc/xstartup
 
 # Configure xrdp to start openbox on user login.
-RUN echo "exec openbox-session" > ~/startwm.sh && chmod +x ~/startwm.sh
+RUN echo "exec xfce4-session" > ~/startwm.sh && chmod +x ~/startwm.sh
 
 # Start supervisord as root.
 USER root

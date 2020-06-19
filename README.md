@@ -1,6 +1,6 @@
 # JUMP is a Universal Maintenance Pod
 
-JUMP is a container originally designed as a tool for maintenance work on ''edge'' systems running Docker. Starting a JUMP maintenance container can give access for troubleshooting or maintenance using the remote access tools most engineers are comfortable with. Using multiple protocols provides flexibility and allows access from numerous clients from a great number of operating systems.
+JUMP is a container originally designed as a tool for maintenance on ''edge'' systems running Docker. Starting a JUMP container can give access for troubleshooting or maintenance using the remote access tools most engineers are comfortable with. Using multiple protocols provides flexibility and allows access from numerous clients from a great number of operating systems.
 
 Jump provides the following protocols for accessing the desktop:
 
@@ -23,11 +23,11 @@ Alle used software is open-source.
 - noVNC HTML5 VNC-frontend
 - XRDP Terminal Server for X11
 - Chromium browser
-- Openbox window manager
+- Openbox or XFCE4 window manager
 
 ## Build instructions
 
-Clone the Git repository and add your own values to the "ARG" variables in the Docker file or the docker-compose.yml depending on wether you want to use docker-compose or not.
+Clone the Git repository and add your own values to the "ARG" variables in the Dockerfile or the docker-compose.yml depending on wether you want to use docker-compose or not.
 
 | ARG        | Description                              |
 |------------|------------------------------------------|
@@ -39,13 +39,15 @@ Clone the Git repository and add your own values to the "ARG" variables in the D
 | BROWSER    | Select your browser: firefox/chromium    |
 | OPTPKGS    | Select optional packages to install      |
 
+
+### Build using Openbox
 Building the container using docker-compose
 
 ```bash
 git clone https://github.com/venera-13/jump.git
 cd jump
 vim docker-compose.yml
-docker-compose build
+docker-compose -f ./docker-compose.yml build
 ```
 
 Building the container with docker
@@ -54,15 +56,41 @@ Building the container with docker
 git clone https://github.com/venera-13/jump.git
 cd jump
 vim Dockerfile
-docker build -f ./Dockerfile -t localhost/jump:3
+docker build -f ./Dockerfile -t docker.io/okroshka/jump:latest
 ```
+
+### Build using XFCE4
+Building the container using docker-compose
+
+```bash
+git clone https://github.com/venera-13/jump.git
+cd jump
+vim docker-compose.xfce.yml
+docker-compose -f ./docker-compose.xfce.yml build
+```
+
+Building the container with docker
+
+```bash
+git clone https://github.com/venera-13/jump.git
+cd jump
+vim Dockerfile.xfce
+docker build -f ./Dockerfile.xfce -t docker.io/okroshka/jump:xfce-latest
+```
+
 
 ## Using the container
 
 Start the container with the below command. If you did not build the image yourself in the above steps the container will be downloaded from docker.io. Parameters are explained in the table.
 
 ```bash
+# For Openbox
 docker run -d --rm --shm-size=1g --name jump  -p 3389:3389 -p 5901:5901 -p 8080:8080 docker.io/okroshka/jump:latest
+
+# For XFCE4
+docker run -d --rm --shm-size=1g --name jump  -p 3389:3389 -p 5901:5901 -p 8080:8080 docker.io/okroshka/jump:xfce-latest
+
+# Stopping and removing the container
 docker stop jump
 ```
 
