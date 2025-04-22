@@ -1,4 +1,4 @@
-FROM docker.io/centos:8.2.2004
+FROM docker.io/centos:centos8.4.2105
 LABEL maintainer="https://github.com/venera-13/jump"
 
 ########### Configure variables here ##########################
@@ -20,22 +20,30 @@ ARG OPTPKGS="nmap-ncat telnet tcpdump openssh-clients bind-utils net-snmp-utils"
 # Configure timezone
 RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/${TZ} /etc/localtime
 
+# Fix repo's for CentOS to use vault.centos.org as the CentOS 8 repositories are no longer available.
+RUN sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo && \
+    sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo && \
+    sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo && \
+    sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* && \
+    sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+
 # This block installs necessary packages. 
 # Notes:
 # RHEL8 does not install UTF-8 glibc language packs by default. Install glibc-langpack-en to solve lots of problems.
 # Install EPEL to install packages not found in standard RHEL repositories.
 # Install novnc and websockify through CentOS community buildservice as they are not available in either EPEL or RHEL repositories.
-RUN dnf install --nodocs -y epel-release glibc-langpack-en && \
+RUN dnf update -y && \
+    dnf install --nodocs -y epel-release glibc-langpack-en && \
     dnf install --nodocs -y \
         tigervnc-server \
         xrdp \
-	xorgxrdp \
+	    xorgxrdp \
         supervisor \
-	sudo \
-	# Fetch novnc and websockify from CentOS community build service
+	    sudo \
+	    # Fetch novnc and websockify from CentOS community build service
         https://cbs.centos.org/kojifiles/packages/novnc/1.1.0/6.el8/noarch/novnc-1.1.0-6.el8.noarch.rpm \
         https://cbs.centos.org/kojifiles/packages/python-websockify/0.9.0/1.el8/noarch/python3-websockify-0.9.0-1.el8.noarch.rpm \
-	${BROWSER} \
+	    ${BROWSER} \
         ${OPTPKGS} && \
     dnf -y -x gnome-keyring --skip-broken groups install "Xfce" && \
     dnf erase -y *power* *screensaver* && \
