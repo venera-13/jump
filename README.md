@@ -56,7 +56,7 @@ Building the container with docker
 git clone https://github.com/venera-13/jump.git
 cd jump
 vim Dockerfile
-docker build -f ./Dockerfile -t docker.io/okroshka/jump:latest
+docker build -f ./Dockerfile -t docker.io/okroshka/jump:latest .
 ```
 
 ### Build using XFCE4
@@ -75,7 +75,7 @@ Building the container with docker
 git clone https://github.com/venera-13/jump.git
 cd jump
 vim Dockerfile.xfce
-docker build -f ./Dockerfile.xfce -t docker.io/okroshka/jump:xfce-latest
+docker build -f ./Dockerfile.xfce -t docker.io/okroshka/jump:xfce-latest .
 ```
 
 
